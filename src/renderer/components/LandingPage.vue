@@ -1,128 +1,76 @@
 <template>
-  <div id="wrapper">
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
-    <main>
-      <div class="left-side">
-        <span class="title">
-          Welcome to your new project!
-        </span>
-        <system-information></system-information>
-      </div>
-
-      <div class="right-side">
-        <div class="doc">
-          <div class="title">Getting Started</div>
-          <p>
-            electron-vue comes packed with detailed documentation that covers everything from
-            internal configurations, using the project structure, building your application,
-            and so much more.
-          </p>
-          <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
-        </div>
-        <div class="doc">
-          <div class="title alt">Other Documentation</div>
-          <button class="alt" @click="open('https://electron.atom.io/docs/')">Electron</button>
-          <button class="alt" @click="open('https://vuejs.org/v2/guide/')">Vue.js</button>
-        </div>
-      </div>
-    </main>
+  <div>
+    <el-steps :active="1" simple>
+      <el-step title="步骤 1"></el-step>
+      <el-step title="步骤 2"></el-step>
+      <el-step title="步骤 3"></el-step>
+      <el-step title="步骤 3"></el-step>
+      <el-step title="步骤 3"></el-step>
+      <el-step title="步骤 3"></el-step>
+      <el-step title="步骤 3"></el-step>
+      <el-step title="步骤 3"></el-step>
+      <el-step title="步骤 3"></el-step>
+    </el-steps>
+    <el-table
+      ref="multipleTable"
+      :data="fileList"
+      tooltip-effect="dark"
+      style="width: 100%"
+      @row-dblclick="handleEnterPath"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column label="name" width="120"></el-table-column>
+      <el-table-column prop="size" label="姓名" width="120"> </el-table-column>
+      <el-table-column prop="type" label="地址"></el-table-column>
+      <el-table-column prop="last modified time" label="地址" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="CRC32" label="地址" show-overflow-tooltip></el-table-column>
+    </el-table>
+    <textarea v-model="res">
+    </textarea>
+    <el-button @click="handleClick">
+    </el-button>
   </div>
 </template>
 
 <script>
-  import SystemInformation from './LandingPage/SystemInformation'
+const sevenZip = require('es-7z')
 
-  export default {
-    name: 'landing-page',
-    components: { SystemInformation },
-    methods: {
-      open (link) {
-        this.$electron.shell.openExternal(link)
-      }
+sevenZip.delete7z('E:\\新建文件夹.zip', 'E:\\新建文件夹.zip\\wget-log').progress(function (files) {
+  console.log(files)
+})
+
+export default {
+  data () {
+    return {
+      fileList: [
+      ],
+      multipleSelection: [],
+      res: null
     }
+  },
+
+  methods: {
+    toggleSelection (rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+    handleEnterPath (row, column, event) {}
+    // handleClick () {
+    //   sevenZip.list('C:\\Users\\John Mactavish\\Desktop\\tmp\\新建文件夹.7z').on(
+    //     'data', function (data) {
+    //       this.res = data
+    //     }
+    //   )
+    // }
   }
+}
 </script>
-
-<style>
-  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body { font-family: 'Source Sans Pro', sans-serif; }
-
-  #wrapper {
-    background:
-      radial-gradient(
-        ellipse at top left,
-        rgba(255, 255, 255, 1) 40%,
-        rgba(229, 229, 229, .9) 100%
-      );
-    height: 100vh;
-    padding: 60px 80px;
-    width: 100vw;
-  }
-
-  #logo {
-    height: auto;
-    margin-bottom: 20px;
-    width: 420px;
-  }
-
-  main {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  main > div { flex-basis: 50%; }
-
-  .left-side {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .welcome {
-    color: #555;
-    font-size: 23px;
-    margin-bottom: 10px;
-  }
-
-  .title {
-    color: #2c3e50;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 6px;
-  }
-
-  .title.alt {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
-  .doc p {
-    color: black;
-    margin-bottom: 10px;
-  }
-
-  .doc button {
-    font-size: .8em;
-    cursor: pointer;
-    outline: none;
-    padding: 0.75em 2em;
-    border-radius: 2em;
-    display: inline-block;
-    color: #fff;
-    background-color: #4fc08d;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-    border: 1px solid #4fc08d;
-  }
-
-  .doc button.alt {
-    color: #42b983;
-    background-color: transparent;
-  }
-</style>

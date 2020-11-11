@@ -1,7 +1,7 @@
 {
   "name": "compress-sharp",
   "version": "0.5.0",
-  "author": "John Mactavish <cristmactavish@outlook.com>",
+  "author": "gonearewe <cristmactavish@outlook.com>",
   "description": "A simple compression software supporting zip,rar,7z,etc..",
   "license": null,
   "main": "./dist/electron/main.js",
@@ -53,6 +53,9 @@
     }
   },
   "dependencies": {
+    "@smithos/node-7z": "^2.1.5",
+    "element-ui": "^2.14.0",
+    "es-7z": "^0.4.7",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
