@@ -1,0 +1,19 @@
+plugins {
+    id 'scala'
+    id 'idea'
+}
+
+group 'com.mactavish'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    ['base', 'controls', 'fxml', 'graphics', 'media', 'swing', 'web'].each {
+        compile group: 'org.openjfx', name: 'javafx-' + it, version: '14.0.2', classifier: 'win'
+    }
+    compile group: 'org.jfxtras', name: 'jmetro', version: '11.6.12'
+    compile group: 'org.scalafx', name: 'scalafx_2.13', version: '14-R19'
+}
