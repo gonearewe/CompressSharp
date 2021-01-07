@@ -4,16 +4,25 @@ plugins {
 }
 
 group 'com.mactavish'
-version '1.0-SNAPSHOT'
+version '0.5.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // scalafx
+    compile group: 'org.scalafx', name: 'scalafx_2.13', version: '14-R19'
+    // javafx is separated from java built-in library since 11, thus requires introducing dependencies
     ['base', 'controls', 'fxml', 'graphics', 'media', 'swing', 'web'].each {
         compile group: 'org.openjfx', name: 'javafx-' + it, version: '14.0.2', classifier: 'win'
     }
+    // scalafx's Win10-like theme
     compile group: 'org.jfxtras', name: 'jmetro', version: '11.6.12'
-    compile group: 'org.scalafx', name: 'scalafx_2.13', version: '14-R19'
+
+    // for Compression
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'
+
+    // SpringBoot support
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.4.1'
 }
