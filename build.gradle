@@ -22,6 +22,9 @@ dependencies {
 
     // for Compression
     compile group: 'org.apache.commons', name: 'commons-compress', version: '1.20'
+    // or
+    compile group: 'net.sf.sevenzipjbinding', name: 'sevenzipjbinding', version: '16.02-2.01'
+    compile group: 'net.sf.sevenzipjbinding', name: 'sevenzipjbinding-all-platforms', version: '16.02-2.01'
 
     // SpringBoot support
     compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.4.1'
