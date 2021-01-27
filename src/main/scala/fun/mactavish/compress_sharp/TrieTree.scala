@@ -14,7 +14,7 @@ case class TrieTree[K, V](
     tail match {
       case Nil => this
       case next :: remaining =>
-        children_.find(_.key == next) match {
+        children_.find(_.key == next._1) match {
           case Some(child) =>
             child.insert(remaining)
           case None =>
@@ -37,11 +37,11 @@ case class TrieTree[K, V](
     }
   }
 
-  private def isRoot = this.parent == null
+  def isRoot = this.parent == null
 
 }
 
 object TrieTree {
-  def empty[K, V](identity: (K, V) = null): TrieTree[K, V] =
+  def empty[K, V](identity: (K, V)): TrieTree[K, V] =
     TrieTree[K, V](parent = null, key = identity._1, value = identity._2)
 }

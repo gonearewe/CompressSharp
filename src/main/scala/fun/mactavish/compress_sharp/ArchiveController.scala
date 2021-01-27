@@ -1,4 +1,4 @@
-package fun.mactavish.compress_sharp.controller
+package fun.mactavish.compress_sharp
 
 import java.nio.file.Path
 
