@@ -24,11 +24,14 @@ class TrieTreeViewer extends ObservableBuffer[Item] {
     trie
   }
 
-  def forward(child: Item): Unit = {
+  def forward(child: Item): Boolean = {
+    if (!child.isDir) return false // can't enter file item
+
     cur.children.find(_.value == child) match {
       case Some(c) =>
         cur = c
         updateBuffer()
+        true
       case None =>
         throw CompressSharpException(s"$cur doesn't have a child ${child.getName}")
     }

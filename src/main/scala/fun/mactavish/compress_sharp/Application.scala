@@ -5,10 +5,11 @@ import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 
 object Application extends Thread with JFXApp {
-  stage = new PrimaryStage {
-    scene = new PrimaryScene(stage)
-    new JMetro(Style.LIGHT).setScene(scene.value)
-  }
+  stage = new PrimaryStage
+  private val scene = new PrimaryScene(stage)
+  stage.setScene(scene)
+
+  new JMetro(Style.LIGHT).setScene(scene)
 
   override def start(): Unit = {
     main(Array())
