@@ -1,16 +1,29 @@
 package fun.mactavish.compress_sharp
 
+import java.io.File
+
 import fun.mactavish.sevenz4s.{ExtractionEntry => Entry}
 import scalafx.collections.ObservableBuffer
 
+import scala.collection.mutable
+
 class TrieTreeViewer extends ObservableBuffer[Item] {
+  private var path = mutable.Stack[String]()
   private var root: TrieTree[String, Item] = _
   private var cur: TrieTree[String, Item] = root
 
   def reset(entries: Seq[Entry]): Unit = {
     root = buildTrie(entries)
     cur = root
+    path.clear()
     updateBuffer()
+  }
+
+  def pathOf(item: Item, sep: String = File.separator): String = {
+    if (!list().contains(item)) throw CompressSharpException("only provide path of currently viewed items")
+
+    if (path.isEmpty) item.getName // avoid leading separator
+    else path.mkString(start = "", sep = sep, end = sep).concat(item.getName)
   }
 
   private def buildTrie(entries: Seq[Entry]): TrieTree[String, Item] = {
@@ -30,6 +43,7 @@ class TrieTreeViewer extends ObservableBuffer[Item] {
     cur.children.find(_.value == child) match {
       case Some(c) =>
         cur = c
+        path.push(c.key)
         updateBuffer()
         true
       case None =>
@@ -40,6 +54,7 @@ class TrieTreeViewer extends ObservableBuffer[Item] {
   def back(): Boolean = {
     if (cur.isRoot) false
     else {
+      path.pop()
       cur = cur.parent
       updateBuffer()
       true

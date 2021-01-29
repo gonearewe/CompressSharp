@@ -6,6 +6,7 @@ import scalafx.application.JFXApp.PrimaryStage
 
 object Application extends Thread with JFXApp {
   stage = new PrimaryStage
+  stage.height = 600
   private val scene = new PrimaryScene(stage)
   stage.setScene(scene)
 

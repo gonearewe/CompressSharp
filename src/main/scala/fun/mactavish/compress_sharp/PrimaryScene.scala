@@ -1,34 +1,37 @@
 package fun.mactavish.compress_sharp
 
-import fun.mactavish.sevenz4s.{ExtractionEntry => Entry}
+import java.io.File
+
 import scalafx.beans.property.{ObjectProperty, StringProperty}
-import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, TableCell, TableColumn, TableView}
+import scalafx.scene.control._
 import scalafx.scene.layout.{BorderPane, HBox, VBox}
-import scalafx.stage.Stage
+import scalafx.stage.{DirectoryChooser, Stage}
+
+import scala.collection.mutable
 
 class PrimaryScene(stage: Stage) extends Scene {
   private val trie = new TrieTreeViewer
-  private val menu = ObservableBuffer("Open", "Extract", "Settings")
-  private val newEntries = new ObjectProperty[Seq[Entry]]() {
+  private val archiveFile = new ObjectProperty[File]() {
     onChange {
-      (_, _, entries) => trie.reset(entries)
+      (_, _, f) => {
+        val entries = ArchiveController.listEntries(f.toPath)
+        trie.reset(entries)
+      }
     }
   }
 
+  private def reloadTrie(): Unit = {
+    val f = archiveFile.value
+    val entries = ArchiveController.listEntries(f.toPath)
+    trie.reset(entries)
+  }
+
   root = new BorderPane {
-    left = new Menu(stage, newEntries)
+    left = new Menu(stage, archiveFile)
 
     center = new VBox {
       private val table: TableView[Item] = new TableView[Item](trie) {
-        // enter double-clicked folder
-        onMouseClicked = e => {
-          if (e.getClickCount >= 2) {
-            trie.forward(this.getSelectionModel.getSelectedItem)
-          }
-        }
-
         // first column of the table displays file icon
         private val iconColumn = new TableColumn[Item, FileType] {
           prefWidth = 50
@@ -81,14 +84,66 @@ class PrimaryScene(stage: Stage) extends Scene {
         )
       }
 
+      table.getSelectionModel.setSelectionMode(SelectionMode.Multiple)
+      // enter double-clicked folder
+      table.onMouseClicked = e => {
+        if (e.getClickCount >= 2) {
+          trie.forward(table.getSelectionModel.getSelectedItem)
+        }
+      }
       table.fixedCellSize = 35
       table.prefHeight <== stage.height // fit in with stage's size
+      table.setPlaceholder(new Label("Compress Sharp"))
+
+      private val opMenu = List("/back.png", "/add.png", "/delete.png", "/extract.png")
+        .map(i => getClass.getResource(i).getFile)
 
       children = List(new HBox {
-        children = new Button {
-          graphic = new Icon(getClass.getResource("/back.png").getFile)
-          onMouseClicked = _ => trie.back()
-        }
+        children = List(
+          new Button {
+            text = "Back"
+            graphic = new Icon(opMenu.head)
+            onMouseClicked = _ => trie.back()
+          },
+          new Button {
+            text = "Add"
+            graphic = new Icon(opMenu(1))
+            onMouseClicked = _ => ???
+          },
+          new Button {
+            text = "Delete"
+            graphic = new Icon(opMenu(2))
+            onMouseClicked = _ => {
+              val items = mutable.ArrayBuffer[Item]()
+              table.getSelectionModel.getSelectedItems.forEach(i => items.append(i))
+              val paths = items.map(i => trie.pathOf(i)).toSet
+              ArchiveController.deleteEntries(archiveFile.value.toPath, paths)
+              reloadTrie()
+            }
+          },
+          new Button {
+            text = "Extract"
+            graphic = new Icon(opMenu(3))
+            onMouseClicked = _ => {
+              val to = new DirectoryChooser().showDialog(stage)
+              if (to != null) {
+                val items = mutable.ArrayBuffer[Item]()
+                table.getSelectionModel.getSelectedItems.forEach(i => items.append(i))
+                val paths = items.map(i => trie.pathOf(i)).toSet
+                ArchiveController.extractEntries(archiveFile.value.toPath, paths, to.toPath)
+              }
+            }
+          },
+          new Button {
+            text = "Extract All"
+            graphic = new Icon(opMenu(3))
+            onMouseClicked = _ => {
+              val to = new DirectoryChooser().showDialog(stage)
+              if (to != null)
+                ArchiveController.extractAll(archiveFile.value.toPath, to.toPath)
+            }
+          }
+        )
       }, table)
     }
   }
