@@ -19,6 +19,11 @@ class TrieTreeViewer extends ObservableBuffer[Item] {
     updateBuffer()
   }
 
+  def currentPath(sep: String = File.separator): String = {
+    if (path.isEmpty) "" // avoid leading separator
+    else path.mkString(start = "", sep = sep, end = sep)
+  }
+
   def pathOf(item: Item, sep: String = File.separator): String = {
     if (!list().contains(item)) throw CompressSharpException("only provide path of currently viewed items")
 

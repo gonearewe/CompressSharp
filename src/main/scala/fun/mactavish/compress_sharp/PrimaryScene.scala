@@ -28,7 +28,7 @@ class PrimaryScene(stage: Stage) extends Scene {
   }
 
   root = new BorderPane {
-    left = new Menu(stage, archiveFile)
+    left = new CtrlMenu(stage, archiveFile)
 
     center = new VBox {
       private val table: TableView[Item] = new TableView[Item](trie) {
@@ -95,7 +95,7 @@ class PrimaryScene(stage: Stage) extends Scene {
       table.prefHeight <== stage.height // fit in with stage's size
       table.setPlaceholder(new Label("Compress Sharp"))
 
-      private val opMenu = List("/back.png", "/add.png", "/delete.png", "/extract.png")
+      private val opMenu = List("/back.png", "/extract.png")
         .map(i => getClass.getResource(i).getFile)
 
       children = List(new HBox {
@@ -106,24 +106,8 @@ class PrimaryScene(stage: Stage) extends Scene {
             onMouseClicked = _ => trie.back()
           },
           new Button {
-            text = "Add"
-            graphic = new Icon(opMenu(1))
-            onMouseClicked = _ => ???
-          },
-          new Button {
-            text = "Delete"
-            graphic = new Icon(opMenu(2))
-            onMouseClicked = _ => {
-              val items = mutable.ArrayBuffer[Item]()
-              table.getSelectionModel.getSelectedItems.forEach(i => items.append(i))
-              val paths = items.map(i => trie.pathOf(i)).toSet
-              ArchiveController.deleteEntries(archiveFile.value.toPath, paths)
-              reloadTrie()
-            }
-          },
-          new Button {
             text = "Extract"
-            graphic = new Icon(opMenu(3))
+            graphic = new Icon(opMenu(1))
             onMouseClicked = _ => {
               val to = new DirectoryChooser().showDialog(stage)
               if (to != null) {
@@ -136,7 +120,7 @@ class PrimaryScene(stage: Stage) extends Scene {
           },
           new Button {
             text = "Extract All"
-            graphic = new Icon(opMenu(3))
+            graphic = new Icon(opMenu(1))
             onMouseClicked = _ => {
               val to = new DirectoryChooser().showDialog(stage)
               if (to != null)

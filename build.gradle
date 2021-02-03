@@ -21,8 +21,7 @@ dependencies {
     implementation group: 'org.jfxtras', name: 'jmetro', version: '11.6.12'
 
     // for Compression, my own library
-    implementation group: 'fun.mactavish', name: 'sevenz4s', version: '0.5.0'
-    implementation group: 'net.sf.sevenzipjbinding', name: 'sevenzipjbinding', version: '16.02-2.01'
+    implementation group: 'fun.mactavish', name: 'sevenz4s', version: '0.6.0'
 
     // SpringBoot support
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.4.1'
